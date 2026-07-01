@@ -25,13 +25,10 @@
 html{scroll-behavior:smooth;overflow-x:hidden;}
 body{background:var(--bg-primary)!important;color:var(--text-primary)!important;font-family:'DM Sans',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6;}
 .grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px;}
-.wrap{max-width:1200px;margin:0 auto;padding:0 22px;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px;}
 @media(min-width:1100px){
-  .canvas-box{height:440px;}
-  .canvas-box.tall{height:500px;}
-  .hero{padding:76px 0 40px;}
-  section{padding:64px 0;}
-  .stat .num{font-size:40px;}
+  .canvas-box{height:400px;}
+  .canvas-box.tall{height:440px;}
 }
 
 .hero{padding:60px 0 30px;border-bottom:1px solid var(--border);}
@@ -248,7 +245,7 @@ footer .fnote b{color:var(--text-secondary);}
       <div style="font-size:28px;color:var(--text-muted);">→</div>
       <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:40px;color:var(--accent-gold);line-height:1;">4.4&times;<span style="font-size:13px;color:var(--text-secondary);font-family:'Source Code Pro',monospace;display:block;margin-top:4px;letter-spacing:.3px;">same ratio, 2025</span></div>
     </div>
-    <p>California launched the nation's first police implicit-bias training in 2015 and never rolled it back: the legislature made it mandatory (Penal Code 13519.4), and POST built 26 hours into the academy and 16 into certification.</p>
+    <p>California launched the nation's first police implicit-bias training in 2015 and never rolled it back: the legislature made it mandatory (Penal Code 13519.4), and POST built 26 hours into the academy and 16 into certification. <a href="https://oag.ca.gov/news/press-releases/attorney-general-kamala-d-harris-kicks-first-its-kind-law-enforcement-training" target="_blank" rel="noopener" style="color:var(--accent-cyan);">[DOJ announcement]</a></p>
     <p><b>The state's own arrest data is identical on both sides of that line:</b> Black homicide arrest share was 4.4&times; population before the training and 4.4&times; a decade later. Volumes fell; the ratios never moved.</p>
   </div>
 
@@ -357,9 +354,9 @@ footer .fnote b{color:var(--text-secondary);}
   </div>
 
   <div class="chart-card">
-    <div class="chart-head"><div class="chart-title">Unarmed fatal police shootings &mdash; the entire United States, 2015&ndash;2024</div></div>
+    <div class="chart-head"><div class="chart-title">Unarmed police killings vs officers killed by gunfire &mdash; entire U.S., 2015&ndash;2024</div></div>
     <div class="canvas-box"><canvas id="wapoChart"></canvas></div>
-    <div class="chart-note">Every fatal on-duty police shooting in America, 2015&ndash;2024 &mdash; the database's complete run. The unarmed slice averages <b>22 White, 18 Black, 11 Hispanic, and 1 Asian per year for the entire country</b>; 1 in 18 of those killed is unarmed.</div>
+    <div class="chart-note">Every fatal on-duty police shooting in America, 2015&ndash;2024. Unarmed averages <b>22 White, 18 Black, 11 Hispanic, 1 Asian per year</b> nationwide. Officers killed by gunfire average <b>52 per year &mdash; more than any single unarmed race group</b>. Sources: <a href="https://www.washingtonpost.com/graphics/investigations/police-shootings-database/" target="_blank" rel="noopener">Washington Post Fatal Force</a> (unarmed), <a href="https://www.odmp.org/search/year" target="_blank" rel="noopener">ODMP</a> (officers, gunfire).</div>
   </div>
 
   <div class="funnel">
@@ -693,19 +690,22 @@ footer .fnote b{color:var(--text-secondary);}
   new Chart(document.getElementById('uofChart'),{type:'bar',data:{labels:ufL,datasets:[{data:ufD,backgroundColor:ufC,borderRadius:4,barPercentage:0.7,categoryPercentage:0.66}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:Object.assign({},tip,{callbacks:{label:function(c){return c.parsed.y+' deceased ('+(c.parsed.y/127*100).toFixed(1)+'%)';}}}),datalabels:{display:true,anchor:'end',align:'top',offset:2,font:{size:13,weight:'700'},color:function(c){return ufC[c.dataIndex];},formatter:function(v){return v+' ('+(v/127*100).toFixed(0)+'%)';}}},scales:{y:{beginAtZero:true,grace:'14%',title:{display:true,text:'Deceased civilians',color:labelColor,font:{size:11}},ticks:{color:tickColor},grid:{color:gridColor}},x:{ticks:{color:tickColor,font:{size:12,weight:'600'}},grid:{display:false}}}}});
 
-  /* WaPo unarmed fatal shootings, national, 2015-2024 — data verbatim from dont-shoot-the-data */
+  /* WaPo unarmed fatal shootings + officers killed by gunfire, national, 2015-2024 — verbatim from dont-shoot-the-data */
   var WY=['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'];
+  function avg10(a){return (a.reduce(function(x,y){return x+y;},0)/a.length).toFixed(1);}
+  var wB=[37,20,21,22,11,18,12,12,16,11],wW=[31,29,29,26,26,27,7,23,18,6],wH=[21,13,14,9,11,10,10,9,7,8],wA=[0,1,1,1,5,1,0,0,0,0],wO=[41,64,45,52,52,47,63,63,48,49];
   var WAPO=[
-    {label:'Black (unarmed)',data:[37,20,21,22,11,18,12,12,16,11],c:RC.black},
-    {label:'White (unarmed)',data:[31,29,29,26,26,27,7,23,18,6],c:RC.white},
-    {label:'Hispanic (unarmed)',data:[21,13,14,9,11,10,10,9,7,8],c:RC.hispanic},
-    {label:'Asian (unarmed)',data:[0,1,1,1,5,1,0,0,0,0],c:RC.other,dash:[5,3]}
+    {label:'Officers killed by gunfire \u2014 avg '+avg10(wO)+'/yr',data:wO,c:RC.green,w:3,dash:[8,4]},
+    {label:'White, unarmed \u2014 avg '+avg10(wW)+'/yr',data:wW,c:RC.white,w:2.5},
+    {label:'Black, unarmed \u2014 avg '+avg10(wB)+'/yr',data:wB,c:RC.black,w:2.5},
+    {label:'Hispanic, unarmed \u2014 avg '+avg10(wH)+'/yr',data:wH,c:RC.hispanic,w:2.5},
+    {label:'Asian, unarmed \u2014 avg '+avg10(wA)+'/yr',data:wA,c:RC.other,w:2,dash:[5,3]}
   ];
   new Chart(document.getElementById('wapoChart'),{type:'line',data:{labels:WY,
-    datasets:WAPO.map(function(s){return {label:s.label,data:s.data,borderColor:s.c,backgroundColor:s.c,pointBackgroundColor:s.c,borderWidth:2.5,pointRadius:3,pointHoverRadius:6,tension:0.1,fill:false,borderDash:s.dash||[]};})},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:labelColor,usePointStyle:true,pointStyle:'circle',padding:12,font:{size:11}}},
+    datasets:WAPO.map(function(s){return {label:s.label,data:s.data,borderColor:s.c,backgroundColor:s.c,pointBackgroundColor:s.c,borderWidth:s.w,pointRadius:3,pointHoverRadius:6,tension:0.1,fill:false,borderDash:s.dash||[]};})},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:labelColor,usePointStyle:true,pointStyle:'circle',padding:10,font:{size:10.5}}},
       tooltip:Object.assign({},tip,{mode:'index',intersect:false}),datalabels:{display:false}},
-      scales:{y:{beginAtZero:true,max:40,title:{display:true,text:'Unarmed deaths per year, entire U.S.',color:labelColor,font:{size:11}},ticks:{color:tickColor,stepSize:10},grid:{color:gridColor}},
+      scales:{y:{beginAtZero:true,max:70,title:{display:true,text:'Deaths per year, entire U.S.',color:labelColor,font:{size:11}},ticks:{color:tickColor,stepSize:10},grid:{color:gridColor}},
         x:{ticks:{color:tickColor,font:{size:10}},grid:{color:gridColor}}},interaction:{mode:'nearest',axis:'x',intersect:false}}});
 
   /* =================== SOURCES MODAL =================== */
